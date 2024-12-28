@@ -4,12 +4,12 @@ import AuthLayout from '@/layouts/auth-layout.vue'
 import DashboardLayout from '@/layouts/dashboard-layout.vue'
 
 
-const componentsPlugin = {
-  install: (app: App, options: unknown) {
+export const GlocalComponentsPlugin = {
+  install(app: App) {
     /**
      * Layout components
      */
-    app.component('AuthLayout', AuthLayout)
-    app.component('DashboardLayout', DashboardLayout)
-  }
-}
+    app.component("AuthLayout", AuthLayout);
+    app.component("DashboardLayout", DashboardLayout);
+  },
+};
