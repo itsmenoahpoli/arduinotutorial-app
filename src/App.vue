@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import { ElConfigProvider } from 'element-plus';
 </script>
 
 <template>
@@ -8,7 +8,4 @@
   </ElConfigProvider>
 </template>
 
-<style lang="scss" scoped>
-@import "nprogress/nprogress.css";
-@import "@/styles/app.css"
-</style>
+<style lang="scss" scoped></style>
