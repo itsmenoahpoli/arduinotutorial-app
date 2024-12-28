@@ -1,16 +1,13 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  type AxiosError,
+  type AxiosInstance,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
 
 const instance: AxiosInstance = axios.create({
-  baseURL: import.meta.VITE_APP_API_BASEURL,
+  baseURL: import.meta.env.VITE_APP_API_BASEURL,
 });
-
-const handleApiError = (error: AxiosError | unknown) => {
-  console.log(error)
-
-  if (error instanceof AxiosError) {
-    //
-  }
-}
 
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
@@ -35,7 +32,7 @@ instance.interceptors.response.use(
     if (error.response) {
       const { status } = error.response;
 
-      console.log(error)
+      console.log(error);
 
       if (status === 500) {
         console.error({
