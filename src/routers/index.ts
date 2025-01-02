@@ -5,13 +5,14 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: "/",
-      redirect: "/auth/login",
+      path: "/auth/admin-login",
+      name: "auth/admin-login",
+      component: () => import("@/views/auth/admin-login.vue"),
     },
     {
-      path: "/auth/login",
-      name: "auth-login",
-      component: () => import("@/views/auth/login.vue"),
+      path: "/admin/dashboard",
+      name: "auth/admin-dashboard",
+      component: () => import("@/views/admin/dashboard.vue"),
     },
   ],
 });

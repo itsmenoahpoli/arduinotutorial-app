@@ -4,7 +4,7 @@ import LoginForm from '@/components/modules/auth/login-form.vue'
 
 <template>
   <AuthLayout>
-    <LoginForm />
+    <LoginForm login-type="admin" />
   </AuthLayout>
 </template>
 
