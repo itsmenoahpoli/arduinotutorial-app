@@ -2,7 +2,7 @@ export const ROUTES = {
   API: {
     SIGNIN: "/auth/signin",
     VIDEOS: {
-      LIST: "/videos",
+      LIST: "/media/videos",
     },
   },
   PAGES: {

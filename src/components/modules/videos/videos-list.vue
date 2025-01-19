@@ -3,29 +3,26 @@ import { ElButton, ElTable, ElTableColumn } from 'element-plus';
 import { useQuery } from '@tanstack/vue-query';
 import { useVideosService } from '@/services'
 
-const { getVideos } = useVideosService();
+const { fetchVideos } = useVideosService();
 const { isFetching, data } = useQuery({
   queryKey: ['videos'],
-  queryFn: getVideos,
+  queryFn: fetchVideos,
 })
 </script>
 
 <template>
-  <el-table :data="data" v-loading="isFetching" element-loading-text="Fetching data">
-    <el-table-column fixed prop="date" label="Date" />
-    <el-table-column prop="title" label="Title" />
-    <el-table-column prop="description" label="Description" />
-    <el-table-column prop="category" label="Category" />
-    <el-table-column prop="created_at" label="Date Uploaded" />
-    <el-table-column align="right" label="...">
+  <ElTable :data="data" v-loading="isFetching" element-loading-text="Fetching data">
+    <ElTableColumn prop="thumbnail_url" label="Thumbnail" />
+    <ElTableColumn prop="name" label="Title" />
+    <ElTableColumn prop="description" label="Description" />
+    <ElTableColumn prop="created_at" label="Date Uploaded" />
+    <ElTableColumn align="right" label="...">
       <template #default>
-        <el-button link type="primary" size="small" @click="handleClick">
-          Detail
-        </el-button>
-        <el-button link type="primary" size="small">Edit</el-button>
+        <ElButton type="primary" size="small" link>Edit</ElButton>
+        <ElButton type="danger" size="small" link>Delete</ElButton>
       </template>
-    </el-table-column>
-  </el-table>
+    </ElTableColumn>
+  </ElTable>
 </template>
 
 <style lang="scss" scoped></style>

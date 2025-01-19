@@ -5,14 +5,23 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: "/",
+      redirect: "/auth/admin-login",
+    },
+    {
       path: "/auth/admin-login",
-      name: "auth/admin-login",
+      name: "auth-admin-login",
       component: () => import("@/views/auth/admin-login.vue"),
     },
     {
       path: "/admin/dashboard",
-      name: "auth/admin-dashboard",
+      name: "auth-admin-dashboard",
       component: () => import("@/views/admin/dashboard.vue"),
+    },
+    {
+      path: "/admin/videos/upload",
+      name: "auth-admin-videos-upload",
+      component: () => import("@/views/admin/videos/upload.vue"),
     },
   ],
 });
