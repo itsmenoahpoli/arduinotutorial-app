@@ -12,6 +12,7 @@
     "@tanstack/vue-query": "^5.62.9",
     "@unhead/vue": "^1.11.14",
     "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
     "element-plus": "^2.9.1",
     "nprogress": "^0.2.0",
     "oh-vue-icons": "^1.0.0-rc3",

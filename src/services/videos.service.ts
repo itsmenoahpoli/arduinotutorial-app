@@ -12,8 +12,8 @@ export const useVideosService = () => {
   };
 
   const uploadVideo = async (payload: any) => {
-    console.log(payload);
     const formData = new FormData();
+
     formData.append("name", payload.name);
     formData.append("description", payload.description);
     formData.append("video_file", payload.video_file);
@@ -32,8 +32,19 @@ export const useVideosService = () => {
       });
   };
 
+  const deleteVideo = async (id: number) => {
+    return await httpClient
+      .delete(ROUTES.API.VIDEOS.BY_ID(id))
+      .then((response) => {
+        if (response.status === HTTP.RESPONSES.HTTP_NO_CONTENT) {
+          alert("Video deleted successfully!");
+        }
+      });
+  };
+
   return {
     fetchVideos,
     uploadVideo,
+    deleteVideo,
   };
 };

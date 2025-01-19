@@ -7,7 +7,7 @@ import { ElCard } from 'element-plus';
     <ElCard class="w-[400px]">
       <slot />
       <template #footer>
-        <p class="text-xs text-center text-gray-400">All Rights Reserved &copy; 2024</p>
+        <p class="text-xs text-center text-gray-400">All Rights Reserved &copy; 2025</p>
       </template>
     </ElCard>
   </div>

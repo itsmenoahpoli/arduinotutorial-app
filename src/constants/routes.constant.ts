@@ -3,6 +3,7 @@ export const ROUTES = {
     SIGNIN: "/auth/signin",
     VIDEOS: {
       LIST: "/media/videos",
+      BY_ID: (id: number) => `/media/videos/${id.toString()}`,
     },
   },
   PAGES: {
