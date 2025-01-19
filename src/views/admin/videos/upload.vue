@@ -17,8 +17,8 @@ const { uploadVideo } = useVideosService()
 const formRef = ref<FormInstance>()
 
 const formModel = reactive<CreateVideoTutorial>({
-  name: 'title',
-  description: 'description',
+  name: '',
+  description: '',
   status: 'published',
   video_file: null,
   thumbnail_file: null,
@@ -127,7 +127,7 @@ const generateThumbnail = (videoFile: File) => {
             <div class="flex flex-col gap-y-2">
               <input v-if="!formModel.thumbnail" type="file" @change="handleVideoInput" />
               <div v-else>
-                <ElButton type="primary" color="red" class="text-xs mb-3" @click="handleRemoveVideoFile">Remove
+                <ElButton type="primary" color="red" class="text-xs mb-3" @click="handleRemoveVideoFile" plain>Remove
                 </ElButton>
                 <img :src="formModel.thumbnail" alt="Video Thumbnail" />
               </div>

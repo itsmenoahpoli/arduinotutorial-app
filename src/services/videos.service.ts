@@ -1,3 +1,4 @@
+import { ElMessageBox, ElMessage } from "element-plus";
 import { httpClient } from "@/api";
 import { ROUTES, HTTP } from "@/constants";
 
@@ -25,7 +26,18 @@ export const useVideosService = () => {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then((response) => response.data)
+      .then((response) => {
+        if (response.status === HTTP.RESPONSES.HTTP_CREATED) {
+          ElMessageBox.alert("Video uploaded", "Info", {
+            confirmButtonText: "Okay!",
+            confirmButtonClass: "!bg-green-700",
+            type: "success",
+            callback: () => {
+              window.location.href = ROUTES.PAGES.ADMIN.DASHBOARD;
+            },
+          });
+        }
+      })
       .catch((error) => {
         console.log(error);
         return [];
@@ -37,7 +49,10 @@ export const useVideosService = () => {
       .delete(ROUTES.API.VIDEOS.BY_ID(id))
       .then((response) => {
         if (response.status === HTTP.RESPONSES.HTTP_NO_CONTENT) {
-          alert("Video deleted successfully!");
+          ElMessage({
+            type: "warning",
+            message: "Video deleted successfully",
+          });
         }
       });
   };

@@ -1,20 +1,29 @@
 <script lang="ts" setup>
-import { ElButton, ElTable, ElTableColumn } from 'element-plus';
+import { ElButton, ElTable, ElTableColumn, ElMessageBox } from 'element-plus';
 import { useQuery } from '@tanstack/vue-query';
 import { useVideosService } from '@/services'
 import { useStringHelpers } from '@/composables'
 
 const { fetchVideos, deleteVideo } = useVideosService();
 const { formatDate } = useStringHelpers()
-const { isFetching, data } = useQuery({
+const { isFetching, data, refetch } = useQuery({
   queryKey: ['videos'],
   queryFn: fetchVideos,
 })
 
 const confirmDelete = async (id: number) => {
-  if (confirm('Do you confirm to delete this video?')) {
-    await deleteVideo(id)
-  }
+  ElMessageBox.confirm(
+    'Do you confirm to delete this video?',
+    'Confirm',
+    {
+      confirmButtonClass: 'bg-red-500 hover:bg-red-700 border-0',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      type: 'warning'
+    }
+  ).then(async () => {
+    await deleteVideo(id).then(() => refetch())
+  })
 }
 </script>
 
@@ -22,7 +31,7 @@ const confirmDelete = async (id: number) => {
   <ElTable :data="data" v-loading="isFetching" element-loading-text="Fetching data">
     <ElTableColumn prop="thumbnail_url" label="Thumbnail">
       <template #default="scope">
-        <img :src="scope.row.thumbnail_url" alt="thumbnail-image" class="h-[150px] w-[150px]" />
+        <img :src="scope.row.thumbnail_url" alt="thumbnail-image" class="h-[150px] w-[250px]" />
       </template>
     </ElTableColumn>
     <ElTableColumn prop="name" label="Title" />
