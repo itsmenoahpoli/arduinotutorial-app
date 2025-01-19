@@ -17,7 +17,7 @@ export const useVideosService = () => {
     formData.append("name", payload.name);
     formData.append("description", payload.description);
     formData.append("video_file", payload.video_file);
-    formData.append("thumbnail_file", "");
+    formData.append("thumbnail_file", payload.thumbnail_file);
 
     return await httpClient
       .post(ROUTES.API.VIDEOS.LIST, formData, {

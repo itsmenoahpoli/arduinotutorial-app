@@ -8,6 +8,7 @@ type CreateVideoTutorial = {
   description: string;
   status: 'draft' | 'published',
   video_file: any,
+  thumbnail_file: any;
   thumbnail?: string
 }
 
@@ -20,6 +21,7 @@ const formModel = reactive<CreateVideoTutorial>({
   description: 'description',
   status: 'published',
   video_file: null,
+  thumbnail_file: null,
   thumbnail: ''
 })
 
@@ -51,6 +53,20 @@ const handleSignin = async () => {
   await uploadVideo(formModel)
 }
 
+const dataURLToBlob = (dataURL: string): Blob => {
+  const [header, base64] = dataURL.split(',');
+  const mimeMatch = header.match(/:(.*?);/);
+  const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+  const binary = atob(base64);
+  const array = new Uint8Array(binary.length);
+
+  for (let i = 0; i < binary.length; i++) {
+    array[i] = binary.charCodeAt(i);
+  }
+
+  return new Blob([array], { type: mimeType });
+};
+
 const generateThumbnail = (videoFile: File) => {
   const videoElement = document.createElement('video');
   const canvas = document.createElement('canvas');
@@ -70,13 +86,20 @@ const generateThumbnail = (videoFile: File) => {
   videoElement.addEventListener('seeked', () => {
     ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
     const thumbnailDataUrl = canvas.toDataURL('image/jpeg');
+    const blob = dataURLToBlob(thumbnailDataUrl);
+    const thumbnailFile = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
     URL.revokeObjectURL(url);
     formModel.thumbnail = thumbnailDataUrl;
+    formModel.thumbnail_file = thumbnailFile
   });
 
   videoElement.addEventListener('error', () => {
     URL.revokeObjectURL(url);
   });
+
+  console.log(typeof formModel.thumbnail)
+  console.log(formModel.thumbnail)
+
 };
 </script>
 

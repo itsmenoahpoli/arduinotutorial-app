@@ -27,8 +27,13 @@ const router = createRouter({
 });
 
 router.beforeEach(
-  (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-    console.log({ to, from, next });
+  (
+    // @ts-ignore
+    to: RouteLocationNormalized,
+    // @ts-ignore
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+  ) => {
     NProgress.start();
     next();
   }
