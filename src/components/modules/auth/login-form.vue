@@ -4,9 +4,6 @@ import { ElForm, ElFormItem, ElInput, ElButton, type FormRules, type FormInstanc
 import { useAuthService } from '@/services'
 import { type Credentials } from '@/type/auth';
 
-const props = defineProps<{
-  loginType: 'admin' | 'client'
-}>()
 
 const { userSignin } = useAuthService();
 const formRef = ref<FormInstance>()
@@ -29,8 +26,9 @@ const handleSignin = async () => {
 </script>
 
 <template>
-  <ElForm ref="formRef" :model="formModel" :rules="formRules" @submit.prevent="handleSignin" label-position="top" status-icon>
-    <h1 class="text-center font-medium capitalize mb-4">{{ props.loginType }} Login</h1>
+  <ElForm ref="formRef" :model="formModel" :rules="formRules" @submit.prevent="handleSignin" label-position="top"
+    status-icon>
+    <h1 class="text-center font-medium capitalize mb-4">System Login</h1>
     <ElFormItem name="email" label="E-mail">
       <ElInput type="email" v-model="formModel.email" />
     </ElFormItem>
