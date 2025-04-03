@@ -1,5 +1,10 @@
-import { createRouter, createWebHistory, type RouteLocationNormalized, type NavigationGuardNext } from "vue-router";
-import NProgress from 'nprogress'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteLocationNormalized,
+  type NavigationGuardNext,
+} from "vue-router";
+import NProgress from "nprogress";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,14 +28,22 @@ const router = createRouter({
       name: "auth-admin-videos-upload",
       component: () => import("@/views/admin/videos/upload.vue"),
     },
+    {
+      path: "/admin/users",
+      name: "admin-users-list",
+      component: () => import("@/views/admin/users/list.vue"),
+    },
+    {
+      path: "/admin/users/create",
+      name: "admin-users-create",
+      component: () => import("@/views/admin/users/create.vue"),
+    },
   ],
 });
 
 router.beforeEach(
   (
-    // @ts-ignore
     to: RouteLocationNormalized,
-    // @ts-ignore
     from: RouteLocationNormalized,
     next: NavigationGuardNext
   ) => {
@@ -43,4 +56,4 @@ router.afterEach(() => {
   NProgress.done();
 });
 
-export default router
+export default router;

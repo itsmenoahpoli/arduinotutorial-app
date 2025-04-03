@@ -35,8 +35,14 @@ const checkPath = (path: string) => {
             </RouterLink>
           </div>
           <div class="w-full">
-
-            <ElButton class="h-[50px] w-full text-xs" outline>Manage Users</ElButton>
+            <RouterLink to="/admin/users">
+              <ElButton :class="[
+                'h-[50px] w-full text-xs',
+                { '': checkPath('/admin/users') }
+              ]" outline>
+                Manage Users
+              </ElButton>
+            </RouterLink>
           </div>
         </div>
       </div>

@@ -43,7 +43,6 @@ const confirmDelete = async (id: number) => {
     </ElTableColumn>
     <ElTableColumn align="right" label="...">
       <template #default="scope">
-        <ElButton type="primary" size="small" link>Edit</ElButton>
         <ElButton type="danger" size="small" @click="confirmDelete(scope.row.id)" link>Delete</ElButton>
       </template>
     </ElTableColumn>
