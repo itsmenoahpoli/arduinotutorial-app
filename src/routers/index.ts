@@ -14,7 +14,7 @@ const router = createRouter({
       redirect: "/auth/admin-login",
     },
     {
-      path: "/auth/admin-login",
+      path: "/auth/signin",
       name: "auth-admin-login",
       component: () => import("@/views/auth/admin-login.vue"),
     },
@@ -37,6 +37,11 @@ const router = createRouter({
       path: "/admin/users/create",
       name: "admin-users-create",
       component: () => import("@/views/admin/users/create.vue"),
+    },
+    {
+      path: "/client/dashboard",
+      name: "client-dashboard",
+      component: () => import("@/views/client/dashboard.vue"),
     },
   ],
 });

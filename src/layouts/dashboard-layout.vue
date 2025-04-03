@@ -1,25 +1,34 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ElButton } from 'element-plus'
+import { useAuthService } from '@/services'
+import { ROUTES } from '@/constants';
 
 const $props = defineProps<{
   title?: string;
 }>()
 
 const $route = useRoute()
+const router = useRouter()
+const { userSignout } = useAuthService()
 
 const checkPath = (path: string) => {
   return path.includes($route.fullPath)
+}
+
+const handleLogout = () => {
+  userSignout()
+  router.push(ROUTES.API.SIGNIN)
 }
 </script>
 
 <template>
   <div class="h-screen w-full">
     <div class="h-[70px] w-full flex justify-end items-center bg-white shadow-sm px-10">
-      <ElButton type="danger">Logout</ElButton>
+      <ElButton type="danger" @click="handleLogout">Logout</ElButton>
     </div>
 
-    <div className=" flex flex-row p-10">
+    <div className="flex flex-row p-10">
       <div class="flex flex-col w-1/4">
         <h1 className="text-3xl font-bold mb-10">{{ $props.title }}</h1>
 

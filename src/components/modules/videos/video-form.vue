@@ -214,8 +214,6 @@ const getVideoFileSize = (file: File): string => {
       </div>
       <hr />
 
-      {{ formModel }}
-
       <ElForm ref="formRef" :model="formModel" :rules="formRules" @submit.prevent="handleUploadSubmit"
         label-position="top" status-icon>
         <ElFormItem name="name" label="Title" required>
