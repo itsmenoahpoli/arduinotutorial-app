@@ -1,8 +1,14 @@
 import { defineStore } from "pinia";
 
+interface User {
+  fullName: string;
+  email: string;
+  [key: string]: any;
+}
+
 type State = {
   token?: string;
-  user?: object;
+  user?: User;
 };
 
 export const useAuthStore = defineStore("authStore", {
@@ -14,7 +20,7 @@ export const useAuthStore = defineStore("authStore", {
     SET_TOKEN(token: string) {
       this.token = token;
     },
-    SET_USER(user: object) {
+    SET_USER(user: User) {
       this.user = user;
     },
     CLEAR_DATA() {

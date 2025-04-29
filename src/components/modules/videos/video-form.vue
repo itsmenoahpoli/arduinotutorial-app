@@ -1,8 +1,18 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { useVideosService } from '@/services';
-import { ElCard, ElForm, ElFormItem, ElInput, ElButton, type FormRules, type FormInstance } from 'element-plus';
-import { Delete } from '@element-plus/icons-vue';
+import { ElCard, ElForm, ElFormItem, ElInput, ElButton, ElDialog, ElSelect, ElOption, type FormRules, type FormInstance } from 'element-plus';
+import { Delete, Plus } from '@element-plus/icons-vue';
+
+type QuestionType = 'multiple_choice' | 'enumeration';
+
+interface Question {
+  id: number;
+  type: QuestionType;
+  question: string;
+  answer: string;
+  choices?: string[];
+}
 
 type CreateVideoTutorial = {
   name: string;
@@ -11,25 +21,14 @@ type CreateVideoTutorial = {
   video_file: any;
   thumbnail_file: any;
   thumbnail?: string;
-  question1: string;
-  answer1: string;
-  question2: string;
-  answer2: string;
-  question3: string;
-  answer3: string;
-  question4: string;
-  answer4: string;
-  question5: string;
-  answer5: string;
+  questions: Question[];
 }
-
-// Helper type for dynamic key access
-type QuestionKeys = `question${1 | 2 | 3 | 4 | 5}`;
-type AnswerKeys = `answer${1 | 2 | 3 | 4 | 5}`;
 
 const { uploadVideo } = useVideosService()
 
 const formRef = ref<FormInstance>()
+const showQuestionTypeDialog = ref(false)
+const newQuestionType = ref<QuestionType>('multiple_choice')
 
 const formModel = reactive<CreateVideoTutorial>({
   name: '',
@@ -38,76 +37,49 @@ const formModel = reactive<CreateVideoTutorial>({
   video_file: null,
   thumbnail_file: null,
   thumbnail: '',
-  question1: '',
-  answer1: '',
-  question2: '',
-  answer2: '',
-  question3: '',
-  answer3: '',
-  question4: '',
-  answer4: '',
-  question5: '',
-  answer5: ''
+  questions: []
 })
 
-// Helper function for type-safe property access
-const getModelValue = (key: QuestionKeys | AnswerKeys) => {
-  return formModel[key];
-}
-
-// Helper function for type-safe property setting
-const setModelValue = (key: QuestionKeys | AnswerKeys, value: string) => {
-  formModel[key] = value;
-}
-
 const formRules = reactive<FormRules>({
-  title: [
+  name: [
     { required: true, message: 'Field required' }
   ],
   description: [
     { required: true, message: 'Field required' }
-  ],
-  question1: [
-    { required: true, message: 'Question 1 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  answer1: [
-    { required: true, message: 'Answer 1 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  question2: [
-    { required: true, message: 'Question 2 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  answer2: [
-    { required: true, message: 'Answer 2 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  question3: [
-    { required: true, message: 'Question 3 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  answer3: [
-    { required: true, message: 'Answer 3 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  question4: [
-    { required: true, message: 'Question 4 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  answer4: [
-    { required: true, message: 'Answer 4 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  question5: [
-    { required: true, message: 'Question 5 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
-  ],
-  answer5: [
-    { required: true, message: 'Answer 5 is required' },
-    { max: 255, message: 'Maximum length is 255 characters' }
   ]
 })
+
+const handleAddQuestion = () => {
+  showQuestionTypeDialog.value = true
+}
+
+const handleQuestionTypeSelect = () => {
+  const newQuestion: Question = {
+    id: Date.now(),
+    type: newQuestionType.value,
+    question: '',
+    answer: '',
+    choices: newQuestionType.value === 'multiple_choice' ? ['', '', '', ''] : undefined
+  }
+  formModel.questions.push(newQuestion)
+  showQuestionTypeDialog.value = false
+}
+
+const handleRemoveQuestion = (index: number) => {
+  formModel.questions.splice(index, 1)
+}
+
+const handleAddChoice = (questionIndex: number) => {
+  if (formModel.questions[questionIndex].choices) {
+    formModel.questions[questionIndex].choices?.push('')
+  }
+}
+
+const handleRemoveChoice = (questionIndex: number, choiceIndex: number) => {
+  if (formModel.questions[questionIndex].choices) {
+    formModel.questions[questionIndex].choices?.splice(choiceIndex, 1)
+  }
+}
 
 const handleVideoInput = (event: Event) => {
   const target = event.target as HTMLInputElement
@@ -276,17 +248,42 @@ const getVideoFileSize = (file: File): string => {
           </div>
         </ElFormItem>
 
-        <!-- Questions and Answers -->
+        <!-- Questions Section -->
         <div class="border p-4 rounded-md mb-4">
-          <h2 class="text-lg font-medium mb-4">Quiz Questions</h2>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-medium">Quiz Questions</h2>
+            <ElButton type="primary" :icon="Plus" @click="handleAddQuestion">
+              Add Question
+            </ElButton>
+          </div>
 
-          <div v-for="n in 5" :key="n" class="mb-6">
-            <h3 class="text-md font-medium mb-2">Question {{ n }}</h3>
-            <ElFormItem :name="`question${n}`" label="Question" required>
-              <ElInput type="text" v-model="formModel[`question${n}` as QuestionKeys]" />
+          <div v-for="(question, index) in formModel.questions" :key="question.id" class="mb-6 p-4 border rounded-md">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-md font-medium">Question {{ index + 1 }}</h3>
+              <ElButton type="danger" size="small" @click="handleRemoveQuestion(index)" :icon="Delete">
+                Remove
+              </ElButton>
+            </div>
+
+            <ElFormItem :label="'Question'" required>
+              <ElInput type="text" v-model="question.question" />
             </ElFormItem>
-            <ElFormItem :name="`answer${n}`" label="Answer" required>
-              <ElInput type="text" v-model="formModel[`answer${n}` as AnswerKeys]" />
+
+            <template v-if="question.type === 'multiple_choice'">
+              <div class="mb-4">
+                <h4 class="text-sm font-medium mb-2">Choices</h4>
+                <div v-for="(choice, choiceIndex) in question.choices" :key="choiceIndex" class="flex gap-2 mb-2">
+                  <ElInput v-model="question.choices[choiceIndex]" placeholder="Enter choice" />
+                  <ElButton type="danger" size="small" @click="handleRemoveChoice(index, choiceIndex)" :icon="Delete" />
+                </div>
+                <ElButton type="primary" size="small" @click="handleAddChoice(index)" class="mt-2">
+                  Add Choice
+                </ElButton>
+              </div>
+            </template>
+
+            <ElFormItem :label="'Correct Answer'" required>
+              <ElInput type="text" v-model="question.answer" />
             </ElFormItem>
           </div>
         </div>
@@ -294,6 +291,24 @@ const getVideoFileSize = (file: File): string => {
         <ElButton type="success" native-type="submit">Upload Video</ElButton>
       </ElForm>
     </div>
+
+    <!-- Question Type Selection Dialog -->
+    <ElDialog v-model="showQuestionTypeDialog" title="Select Question Type" width="30%">
+      <div class="flex flex-col gap-4">
+        <ElSelect v-model="newQuestionType" placeholder="Select question type">
+          <ElOption label="Multiple Choice" value="multiple_choice" />
+          <ElOption label="Enumeration" value="enumeration" />
+        </ElSelect>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <ElButton @click="showQuestionTypeDialog = false">Cancel</ElButton>
+          <ElButton type="primary" @click="handleQuestionTypeSelect">
+            Add Question
+          </ElButton>
+        </span>
+      </template>
+    </ElDialog>
   </ElCard>
 </template>
 

@@ -3,10 +3,12 @@ import { ref, reactive } from 'vue'
 import { ElForm, ElFormItem, ElInput, ElButton, type FormRules, type FormInstance } from 'element-plus';
 import { useAuthService } from '@/services'
 import { type Credentials } from '@/type/auth';
+import { useRouter } from 'vue-router';
 
-
+const router = useRouter();
 const { userSignin } = useAuthService();
 const formRef = ref<FormInstance>()
+const isLoading = ref(false)
 const formModel = reactive<Credentials>({
   email: 'admin@domain.com',
   password: 'password'
@@ -21,7 +23,17 @@ const formRules = reactive<FormRules<Credentials>>({
 })
 
 const handleSignin = async () => {
-  return await userSignin(formModel)
+  try {
+    isLoading.value = true
+    await userSignin(formModel)
+  } catch (error) {
+    console.log(error)
+    isLoading.value = false
+  }
+}
+
+const handleSignup = () => {
+  router.push('/auth/signup');
 }
 </script>
 
@@ -35,8 +47,25 @@ const handleSignin = async () => {
     <ElFormItem name="password" label="Password">
       <ElInput type="password" v-model="formModel.password" />
     </ElFormItem>
-    <ElButton type="primary" native-type="submit">Log In</ElButton>
+    <ElFormItem>
+      <ElButton type="primary" native-type="submit" :loading="isLoading" :disabled="isLoading" class="w-full">Log In
+      </ElButton>
+    </ElFormItem>
+    <ElFormItem>
+      <ElButton @click="handleSignup" class="w-full">Create Account</ElButton>
+    </ElFormItem>
   </ElForm>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.w-full {
+  width: 100%;
+}
+</style>

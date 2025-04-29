@@ -15,20 +15,21 @@ export const useVideosService = () => {
   const uploadVideo = async (payload: any) => {
     const formData = new FormData();
 
+    // Add basic fields
     formData.append("name", payload.name);
     formData.append("description", payload.description);
-    formData.append("video_file", payload.video_file);
-    formData.append("thumbnail_file", payload.thumbnail_file);
-    formData.append("question1", payload.question1);
-    formData.append("answer1", payload.answer1);
-    formData.append("question2", payload.question2);
-    formData.append("answer2", payload.answer2);
-    formData.append("question3", payload.question3);
-    formData.append("answer3", payload.answer3);
-    formData.append("question4", payload.question4);
-    formData.append("answer4", payload.answer4);
-    formData.append("question5", payload.question5);
-    formData.append("answer5", payload.answer5);
+    formData.append("status", payload.status);
+
+    // Add files if they exist
+    if (payload.video_file) {
+      formData.append("video_file", payload.video_file);
+    }
+    if (payload.thumbnail_file) {
+      formData.append("thumbnail_file", payload.thumbnail_file);
+    }
+
+    // Add questions as JSON string
+    formData.append("questions", JSON.stringify(payload.questions));
 
     return await httpClient
       .post(ROUTES.API.VIDEOS.LIST, formData, {

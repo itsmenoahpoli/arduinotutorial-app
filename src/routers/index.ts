@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import("@/views/auth/admin-login.vue"),
     },
     {
+      path: "/auth/signup",
+      name: "auth-admin-register",
+      component: () => import("@/views/auth/user-register.vue"),
+    },
+    {
       path: "/admin/dashboard",
       name: "auth-admin-dashboard",
       component: () => import("@/views/admin/dashboard.vue"),
@@ -42,6 +47,12 @@ const router = createRouter({
       path: "/client/dashboard",
       name: "client-dashboard",
       component: () => import("@/views/client/dashboard.vue"),
+    },
+    // Catch all route for 404 pages
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import("@/views/errors/404.vue"),
     },
   ],
 });

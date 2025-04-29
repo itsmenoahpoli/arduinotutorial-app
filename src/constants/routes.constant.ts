@@ -1,6 +1,7 @@
 export const ROUTES = {
   API: {
     SIGNIN: "/auth/signin",
+    SIGNUP: "/auth/signup",
     VIDEOS: {
       LIST: "/media/videos",
       BY_ID: (id: number) => `/media/videos/${id.toString()}`,
