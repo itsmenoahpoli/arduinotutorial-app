@@ -27,7 +27,7 @@ const props = defineProps<{
   video: Video
 }>()
 
-const dialogVisible = ref(true)
+const dialogVisible = ref(false)
 const videoRef = ref<HTMLVideoElement>()
 const formRef = ref<FormInstance>()
 const quizRef = ref<HTMLElement>()
@@ -70,7 +70,7 @@ const handleQuizSubmit = async (formEl: FormInstance | undefined) => {
 
     <!-- Quiz Dialog -->
     <ElDialog v-model="dialogVisible" title="Video Quiz" width="50%" :close-on-click-modal="false"
-      :close-on-press-escape="false" :show-close="false">
+      :close-on-press-escape="false">
       <ElForm ref="formRef" :model="quizAnswers" @submit.prevent="handleQuizSubmit(formRef)">
         <h1 class="text-lg font-bold">Questionnaire for video - {{ video.name }}</h1>
         <hr />
