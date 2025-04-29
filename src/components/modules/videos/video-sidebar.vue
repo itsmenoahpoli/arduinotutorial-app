@@ -16,7 +16,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="flex flex-col gap-4">
-    <h3 class="font-bold text-lg">Available Tutorials</h3>
+    <h3 class="font-bold text-white text-lg">Available Tutorials</h3>
     <div class="flex flex-col gap-2">
       <template v-if="videos?.length">
         <ElCard v-for="video in videos" :key="video.id" :class="[

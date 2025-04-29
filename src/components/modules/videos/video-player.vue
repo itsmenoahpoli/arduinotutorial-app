@@ -1,24 +1,22 @@
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue'
-import { ElCard, ElForm, ElFormItem, ElInput, ElButton, type FormInstance } from 'element-plus'
+import { ElCard, ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElDialog, type FormInstance } from 'element-plus'
 
-type QuestionKeys = `question${1 | 2 | 3 | 4 | 5}`
-type AnswerKeys = `answer${1 | 2 | 3 | 4 | 5}`
+type QuestionType = 'multiple_choice' | 'enumeration'
+
+interface Question {
+  id: number
+  type: QuestionType
+  question: string
+  answer: string
+  choices?: string[]
+}
 
 interface Video {
   name: string
   description: string
   video_url: string
-  question1: string
-  answer1: string
-  question2: string
-  answer2: string
-  question3: string
-  answer3: string
-  question4: string
-  answer4: string
-  question5: string
-  answer5: string
+  questions: Question[]
 }
 
 interface QuizAnswers {
@@ -29,36 +27,22 @@ const props = defineProps<{
   video: Video
 }>()
 
-const showQuiz = ref(false)
+const dialogVisible = ref(true)
 const videoRef = ref<HTMLVideoElement>()
 const formRef = ref<FormInstance>()
 const quizRef = ref<HTMLElement>()
 
-const quizAnswers = reactive<QuizAnswers>({
-  answer1: '',
-  answer2: '',
-  answer3: '',
-  answer4: '',
-  answer5: ''
-})
+const quizAnswers = reactive<QuizAnswers>({})
 
 const handleVideoEnded = () => {
-  showQuiz.value = true
+  dialogVisible.value = true
 }
 
-watch(showQuiz, (newValue) => {
+watch(dialogVisible, (newValue) => {
   if (newValue && quizRef.value) {
     quizRef.value.scrollIntoView({ behavior: 'smooth' })
   }
 })
-
-const getQuestion = (n: number): string => {
-  return props.video[`question${n}` as QuestionKeys]
-}
-
-const getCorrectAnswer = (n: number): string => {
-  return props.video[`answer${n}` as AnswerKeys]
-}
 
 const handleQuizSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -84,19 +68,31 @@ const handleQuizSubmit = async (formEl: FormInstance | undefined) => {
       <p class="text-gray-600">{{ video.description }}</p>
     </ElCard>
 
-    <!-- Quiz Section -->
-    <ElCard v-if="showQuiz" ref="quizRef" class="mt-4">
-      <h3 class="text-lg font-bold mb-4">Video Quiz</h3>
+    <!-- Quiz Dialog -->
+    <ElDialog v-model="dialogVisible" title="Video Quiz" width="50%" :close-on-click-modal="false"
+      :close-on-press-escape="false" :show-close="false">
       <ElForm ref="formRef" :model="quizAnswers" @submit.prevent="handleQuizSubmit(formRef)">
-        <div class="space-y-6">
-          <div v-for="n in 5" :key="n" class="border-b pb-4 last:border-0">
+        <h1 class="text-lg font-bold">Questionnaire for video - {{ video.name }}</h1>
+        <hr />
+        <div class="space-y-6 mt-5">
+          <div v-for="question in JSON.parse(video.questions as any)" :key="question.id"
+            class="border-b pb-4 last:border-0">
             <h4 class="font-medium text-gray-900 mb-2">
-              Question {{ n }}: {{ getQuestion(n) }}
+              {{ question.question }}
             </h4>
-            <ElFormItem :prop="`answer${n}`" :rules="[
+            <ElFormItem :prop="`answer${question.id}`" :rules="[
               { required: true, message: 'Please provide an answer', trigger: 'blur' }
             ]">
-              <ElInput v-model="quizAnswers[`answer${n}`]" placeholder="Enter your answer" />
+              <template v-if="question.type === 'multiple_choice'">
+                <ElRadioGroup v-model="quizAnswers[`answer${question.id}`]">
+                  <ElRadio v-for="choice in question.choices" :key="choice" :label="choice">
+                    {{ choice }}
+                  </ElRadio>
+                </ElRadioGroup>
+              </template>
+              <template v-else>
+                <ElInput v-model="quizAnswers[`answer${question.id}`]" placeholder="Enter your answer" />
+              </template>
             </ElFormItem>
           </div>
         </div>
@@ -106,7 +102,7 @@ const handleQuizSubmit = async (formEl: FormInstance | undefined) => {
           </ElButton>
         </div>
       </ElForm>
-    </ElCard>
+    </ElDialog>
   </div>
 </template>
 

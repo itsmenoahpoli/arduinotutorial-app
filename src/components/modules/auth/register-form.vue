@@ -1,5 +1,7 @@
 <template>
-  <ElForm ref="registerForm" :model="formData" :rules="rules" label-position="top" @submit.prevent="handleSubmit">
+  <ElForm ref="registerForm" class="mt-5" :model="formData" :rules="rules" label-position="top"
+    @submit.prevent="handleSubmit" status-icon>
+    <h1 class="text-center font-medium capitalize mb-4">Account Registration</h1>
     <ElFormItem label="Full Name" prop="fullname">
       <el-input v-model="formData.fullname" placeholder="Enter your full name" />
     </ElFormItem>
@@ -17,7 +19,7 @@
     </ElFormItem>
 
     <ElFormItem>
-      <ElButton type="primary" native-type="submit" :loading="loading" class="w-full">
+      <ElButton type="primary" native-type="submit" :loading="loading" class="w-full mt-5">
         Register
       </ElButton>
     </ElFormItem>

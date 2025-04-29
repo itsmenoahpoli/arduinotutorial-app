@@ -25,7 +25,7 @@ const handleVideoSelect = (video: any) => {
       <div class="w-3/4">
         <VideoPlayer v-if="selectedVideo" :video="selectedVideo" />
         <div v-else class="h-[400px] bg-gray-200 rounded-lg flex items-center justify-center">
-          <p class="text-gray-500">Select a video to start learning</p>
+          <p class="text-white-500">Select a video to start learning</p>
         </div>
       </div>
 
