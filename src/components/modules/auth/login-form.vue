@@ -10,8 +10,8 @@ const { userSignin } = useAuthService();
 const formRef = ref<FormInstance>()
 const isLoading = ref(false)
 const formModel = reactive<Credentials>({
-  email: 'admin@domain.com',
-  password: 'password'
+  email: '',
+  password: ''
 })
 const formRules = reactive<FormRules<Credentials>>({
   email: [
