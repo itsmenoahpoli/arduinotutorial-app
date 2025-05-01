@@ -1,6 +1,7 @@
 import { httpClient } from "@/api";
 import { ROUTES, HTTP } from "@/constants";
 import { useAuthStore } from "@/stores";
+import { ElMessage } from "element-plus";
 
 const { API, PAGES } = ROUTES;
 
@@ -26,7 +27,16 @@ export const useAuthService = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        if (
+          error.response &&
+          error.response.status === HTTP.RESPONSES.HTTP_UNAUTHORIZED
+        ) {
+          ElMessage.error(
+            "Invalid credentials. Please check your email and password."
+          );
+        } else {
+          console.log(error);
+        }
       });
   };
 

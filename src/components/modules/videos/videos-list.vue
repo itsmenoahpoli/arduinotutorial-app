@@ -46,7 +46,6 @@ const closeVideoDialog = () => {
 }
 
 const confirmDelete = async (id: number, event?: Event) => {
-  // Prevent the card click event from triggering when clicking delete
   event?.stopPropagation()
 
   ElMessageBox.confirm(
@@ -66,7 +65,6 @@ const confirmDelete = async (id: number, event?: Event) => {
 
 <template>
   <div>
-    <!-- Header with search and upload button -->
     <div class="flex items-center justify-between gap-4">
       <ElInput v-model="searchQuery" placeholder="Search videos..." class="max-w-md" clearable>
         <template #prefix>
@@ -81,8 +79,7 @@ const confirmDelete = async (id: number, event?: Event) => {
       </ElInput>
     </div>
 
-    <div class="relative min-h-[200px]">
-      <!-- Loading overlay -->
+    <div class="relative min-h-[200px] mt-5">
       <div v-if="isFetching" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 z-10">
         <div class="text-center">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
@@ -90,23 +87,22 @@ const confirmDelete = async (id: number, event?: Event) => {
         </div>
       </div>
 
-      <!-- Grid of video cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <div v-for="video in filteredVideos" :key="video.id" @click="openVideoDialog(video)"
           class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-          <!-- Thumbnail -->
+
           <div class="relative group">
             <img :src="video.thumbnail_url" :alt="video.name" class="w-full h-48 object-cover">
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300">
             </div>
           </div>
 
-          <!-- Content -->
+
           <div class="p-4">
             <h3 class="text-lg font-semibold mb-2 line-clamp-1">{{ video.name }}</h3>
             <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ video.description }}</p>
 
-            <!-- Footer -->
+
             <div class="flex items-center justify-between text-sm text-gray-500">
               <span>{{ formatDate(video.created_at) }}</span>
               <ElButton type="danger" size="small" @click="confirmDelete(video.id, $event)" class="hover:text-red-700"
@@ -118,22 +114,22 @@ const confirmDelete = async (id: number, event?: Event) => {
         </div>
       </div>
 
-      <!-- Empty state -->
+
       <div v-if="!isFetching && (!filteredVideos.length)" class="text-center py-12 text-gray-500">
         {{ searchQuery ? 'No videos found matching your search' : 'No videos available' }}
       </div>
     </div>
 
-    <!-- Video Dialog -->
+
     <ElDialog v-model="showVideoDialog" :title="selectedVideo?.name" width="100%" @close="closeVideoDialog"
       destroy-on-close>
       <div v-if="selectedVideo" class="space-y-6">
-        <!-- Video Player -->
+
         <div class="relative w-full" style="padding-top: 56.25%">
           <video class="absolute inset-0 w-full h-full" :src="selectedVideo.video_url" controls autoplay></video>
         </div>
 
-        <!-- Video Details -->
+
         <div class="space-y-4">
           <h2 class="text-xl font-semibold">{{ selectedVideo.name }}</h2>
           <p class="text-gray-600">{{ selectedVideo.description }}</p>

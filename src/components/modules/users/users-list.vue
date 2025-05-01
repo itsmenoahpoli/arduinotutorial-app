@@ -1,14 +1,22 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { ElButton, ElTable, ElTableColumn, ElMessageBox } from 'element-plus';
+import { computed, ref, reactive } from 'vue';
+import { ElButton, ElTable, ElTableColumn, ElMessageBox, ElDialog, ElForm, ElFormItem, ElInput } from 'element-plus';
 import { useQuery } from '@tanstack/vue-query';
 import { useUsersService } from '@/services'
 import { useStringHelpers } from '@/composables'
 import { useAuthStore } from '@/stores'
 
-const { fetchUsers, deleteUser } = useUsersService();
+const { fetchUsers, deleteUser, updateUser } = useUsersService();
 const { formatDate } = useStringHelpers()
 const authStore = useAuthStore()
+
+const editDialogVisible = ref(false)
+const selectedUser = ref(null)
+const editForm = reactive({
+  name: '',
+  email: '',
+  password: ''
+})
 
 const { isFetching, data, refetch } = useQuery({
   queryKey: ['users'],
@@ -39,6 +47,28 @@ const confirmDelete = async (id: number) => {
     await deleteUser(id).then(() => refetch())
   })
 }
+
+const openEditDialog = (user: any) => {
+  selectedUser.value = user
+  editForm.name = user.name
+  editForm.email = user.email
+  editForm.password = ''
+  editDialogVisible.value = true
+}
+
+const handleUpdateUser = async () => {
+  if (!selectedUser.value) return
+
+  const payload = { ...editForm }
+  if (!payload.password) {
+    // @ts-ignore
+    delete payload.password
+  }
+
+  await updateUser((selectedUser.value as any).id, payload)
+  editDialogVisible.value = false
+  refetch()
+}
 </script>
 
 <template>
@@ -52,7 +82,7 @@ const confirmDelete = async (id: number) => {
     </ElTableColumn>
     <ElTableColumn align="right" label="Actions">
       <template #default="scope">
-        <ElButton type="primary" size="small" @click="$router.push(`/admin/users/${scope.row.id}/edit`)" link>
+        <ElButton type="primary" size="small" @click="openEditDialog(scope.row)" link>
           Edit
         </ElButton>
         <ElButton type="danger" size="small" @click="confirmDelete(scope.row.id)" link>
@@ -61,4 +91,22 @@ const confirmDelete = async (id: number) => {
       </template>
     </ElTableColumn>
   </ElTable>
+
+  <ElDialog v-model="editDialogVisible" title="Edit User" width="500px">
+    <ElForm @submit.prevent="handleUpdateUser">
+      <ElFormItem label="Name" required>
+        <ElInput v-model="editForm.name" />
+      </ElFormItem>
+      <ElFormItem label="Email" required>
+        <ElInput v-model="editForm.email" />
+      </ElFormItem>
+      <ElFormItem label="Password" required>
+        <ElInput type="password" v-model="editForm.password" placeholder="Leave empty to keep current password" />
+      </ElFormItem>
+      <div class="dialog-footer">
+        <ElButton @click="editDialogVisible = false">Cancel</ElButton>
+        <ElButton type="primary" @click="handleUpdateUser">Update</ElButton>
+      </div>
+    </ElForm>
+  </ElDialog>
 </template>
